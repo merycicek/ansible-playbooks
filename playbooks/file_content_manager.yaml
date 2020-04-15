@@ -1,6 +1,6 @@
 ---
 - name: Manage files
-  hosts: localhost
+  hosts: all
   become: true
   become_method: sudo
   user: centos  
