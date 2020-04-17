@@ -4,6 +4,7 @@
   become: true
   become_method: sudo
   user: centos  
+  when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "6")
   tasks:
   - name: Create repo
     copy:
@@ -15,16 +16,8 @@
     package:
       name: serverbackup-enterprise-agent
       state: installed
-
-
-
-  - name: Start agent
-    service:
-      name: cdp-agent
-      state: restarted
-      enabled: true
-
-
+    notify: AGENT_RESTART  
+  
   - name: Stop iptables
     service:
       name: iptables
@@ -35,6 +28,11 @@
   - name: Get Key
     shell: "r1soft-setup --get-key http://18.132.37.218/" 
 
-    
-         
+
+  handlers: 
+    name: AGENT_RESTART
+    service: 
+      name: cdp-agent 
+      state: restarted
+      enabled: true 
 
